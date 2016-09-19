@@ -15,10 +15,6 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string resultString = "Site name: {0}; AppName: {1}; DataSource: {2}; Database: {3}";
-            string errorString = "Erro: {0}; Site name: {1}; AppName: {2}";
-            string criptografadoSICOF = "O formato da cadeia de inicialização não está de acordo com a especificação iniciada no índice 0.";
-            string defaultConnection = @".\SQLEXPRESS";
             ServerManager srv = new ServerManager();
             List<string> result = new List<string>();
             List<string> erro = new List<string>();
@@ -31,31 +27,31 @@ namespace ConsoleApplication1
                         try
                         {
                             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectStr.ToString());
-                            if (builder.DataSource != defaultConnection)
+                            if (builder.DataSource != resource.defaultConnection)
                             {
-                                result.Add(String.Format(resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
+                                result.Add(String.Format(resource.resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
                             }
                         }
                         catch (Exception e)
                         {
-                            if (e.Message == criptografadoSICOF)
+                            if (e.Message == resource.criptografadoSICOF)
                             {
                                 try
                                 {
                                     Cipher cript = new Cipher();
                                     SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(cript.DeCipher(connectStr.ToString()));
-                                    if (builder.DataSource != defaultConnection)
+                                    if (builder.DataSource != resource.defaultConnection)
                                     {
-                                        result.Add(String.Format(resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
+                                        result.Add(String.Format(resource.resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
                                     }
                                 }catch (Exception f)
                                 {
-                                    erro.Add(String.Format(errorString, f.Message, site.Name, app.ToString()));
+                                    erro.Add(String.Format(resource.errorString, f.Message, site.Name, app.ToString()));
                                 }
 
                             }
                             else {
-                                erro.Add(String.Format(errorString, e.Message, site.Name, app.ToString()));
+                                erro.Add(String.Format(resource.errorString, e.Message, site.Name, app.ToString()));
                             }
                         }
                     }
