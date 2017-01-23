@@ -2,22 +2,22 @@
 using System.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Data.SqlClient;
 using CriptografiaString;
+using System.Data;
+using Dapper;
+using issConfigReader.POCO;
 
-namespace ConsoleApplication1
+namespace issConfigReader
 {
     class Program
     {
         static void Main(string[] args)
         {
+            string ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            List<banco> listaBancos = new List<banco>();
+            List<erro> listaErro = new List<erro>();
             ServerManager srv = new ServerManager();
-            List<string> result = new List<string>();
-            List<string> erro = new List<string>();
             foreach (var site in srv.Sites)
             {
                 foreach (Application app in site.Applications)
@@ -27,9 +27,9 @@ namespace ConsoleApplication1
                         try
                         {
                             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectStr.ToString());
-                            if (builder.DataSource != resource.defaultConnection)
+                            if (builder.DataSource != resource.defaultConnection && !String.IsNullOrEmpty(builder.DataSource))
                             {
-                                result.Add(String.Format(resource.resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
+                                listaBancos.Add(new banco { aplicacao = site.Name, instancia = builder.DataSource, nomeBanco = builder.InitialCatalog, data = DateTime.Now });
                             }
                         }
                         catch (Exception e)
@@ -40,30 +40,28 @@ namespace ConsoleApplication1
                                 {
                                     Cipher cript = new Cipher();
                                     SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(cript.DeCipher(connectStr.ToString()));
-                                    if (builder.DataSource != resource.defaultConnection)
+                                    if (builder.DataSource != resource.defaultConnection && !String.IsNullOrEmpty(builder.DataSource))
                                     {
-                                        result.Add(String.Format(resource.resultString, site.Name, app.ToString(), builder.DataSource, builder.InitialCatalog));
+                                        listaBancos.Add(new banco { aplicacao = site.Name, instancia = builder.DataSource , nomeBanco = builder.InitialCatalog , data = DateTime.Now } );
                                     }
                                 }catch (Exception f)
                                 {
-                                    erro.Add(String.Format(resource.errorString, f.Message, site.Name, app.ToString()));
+                                    listaErro.Add(new erro { mensagem = f.Message , aplicacao = app.ToString(), data = DateTime.Now, nomeSite = site.Name});
                                 }
 
                             }
                             else {
-                                erro.Add(String.Format(resource.errorString, e.Message, site.Name, app.ToString()));
+                                listaErro.Add(new erro { mensagem = e.Message, aplicacao = app.ToString(), data = DateTime.Now, nomeSite = site.Name });
                             }
                         }
                     }
                 }
             }
-            List<string> finalResult = result.Distinct().ToList();
-            StreamWriter file = new StreamWriter("C:\\textoConnectionStrings.txt");
-            finalResult.ForEach(file.WriteLine);
-            file.Close();
-            StreamWriter file2 = new StreamWriter("C:\\ErroStrings.txt");
-            erro.ForEach(file2.WriteLine);
-            file2.Close();
+            IDbConnection db = new SqlConnection(ConnectionString);
+            db.Execute(resource.insertLevantamento, listaBancos);
+            db.Execute(resource.insertErro, listaErro);
+            db.Close();
+           
         }
     }
 }

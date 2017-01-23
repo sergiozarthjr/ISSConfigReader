@@ -8,7 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ConsoleApplication1 {
+namespace issConfigReader
+{
     using System;
     
     
@@ -79,20 +80,20 @@ namespace ConsoleApplication1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Erro: {0}; Site name: {1}; AppName: {2}.
+        ///   Looks up a localized string similar to INSERT into erro (mensagem, aplicacao, nomeSite, data) VALUES (@mensagem, @aplicacao, @nomeSite ,@data).
         /// </summary>
-        internal static string errorString {
+        internal static string insertErro {
             get {
-                return ResourceManager.GetString("errorString", resourceCulture);
+                return ResourceManager.GetString("insertErro", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Site name: {0}; AppName: {1}; DataSource: {2}; Database: {3}.
+        ///   Looks up a localized string similar to INSERT into levantamento (instancia, nomeBase, aplicacao, data) VALUES (@instancia, @nomeBanco, @aplicacao ,@data).
         /// </summary>
-        internal static string resultString {
+        internal static string insertLevantamento {
             get {
-                return ResourceManager.GetString("resultString", resourceCulture);
+                return ResourceManager.GetString("insertLevantamento", resourceCulture);
             }
         }
     }
