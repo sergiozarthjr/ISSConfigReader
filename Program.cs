@@ -61,7 +61,6 @@ namespace issConfigReader
             db.Execute(resource.insertLevantamento, listaBancos);
             db.Execute(resource.insertErro, listaErro);
             db.Close();
-           
         }
     }
 }
