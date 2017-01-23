@@ -123,10 +123,10 @@
   <data name="defaultConnection" xml:space="preserve">
     <value>.\SQLEXPRESS</value>
   </data>
-  <data name="errorString" xml:space="preserve">
-    <value>Erro: {0}; Site name: {1}; AppName: {2}</value>
+  <data name="insertErro" xml:space="preserve">
+    <value>INSERT into erro (mensagem, aplicacao, nomeSite, data) VALUES (@mensagem, @aplicacao, @nomeSite ,@data)</value>
   </data>
-  <data name="resultString" xml:space="preserve">
-    <value>Site name: {0}; AppName: {1}; DataSource: {2}; Database: {3}</value>
+  <data name="insertLevantamento" xml:space="preserve">
+    <value>INSERT into levantamento (instancia, nomeBase, aplicacao, data) VALUES (@instancia, @nomeBanco, @aplicacao ,@data)</value>
   </data>
 </root>
